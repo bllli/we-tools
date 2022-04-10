@@ -19,8 +19,13 @@ type CreateMemeOutputDto struct {
 	Url string
 }
 
+type GetTagsOutputDto struct {
+	Tags []TagDto
+}
+
 type Usecase interface {
 	CreateMeme(input *CreateMemeInputDto) (*CreateMemeOutputDto, error)
+	GetTags() (*GetTagsOutputDto, error)
 }
 
 type UsecaseImpl struct {
@@ -72,5 +77,24 @@ func (u *UsecaseImpl) CreateMeme(input *CreateMemeInputDto) (*CreateMemeOutputDt
 	return &CreateMemeOutputDto{
 		ID:  id,
 		Url: url,
+	}, nil
+}
+
+// GetTags returns all tags
+func (u *UsecaseImpl) GetTags() (*GetTagsOutputDto, error) {
+	tags, err := u.repo.GetTags()
+	if err != nil {
+		return nil, err
+	}
+
+	tagDtos := make([]TagDto, len(*tags))
+	for i, tag := range *tags {
+		tagDtos[i] = TagDto{
+			ID:   tag.ID,
+			Name: tag.Name,
+		}
+	}
+	return &GetTagsOutputDto{
+		Tags: tagDtos,
 	}, nil
 }

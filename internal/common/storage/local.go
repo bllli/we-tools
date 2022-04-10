@@ -2,8 +2,10 @@ package storage
 
 import (
 	"errors"
+	"github.com/gin-gonic/gin"
 	"os"
 	"strings"
+	"we-tools/internal/common"
 )
 
 type LocalStorage struct {
@@ -67,4 +69,22 @@ func (l *LocalStorage) Upload(key string, data []byte) (string, error) {
 
 func (l *LocalStorage) Get(key string) ([]byte, error) {
 	return os.ReadFile(l.path + "/" + key)
+}
+
+func (l *LocalStorage) Handle(c *gin.Context) {
+	key := c.Param("key")
+	if key == "" {
+		common.Fail(c, "key is empty")
+		return
+	}
+	if !l.Exists(key) {
+		common.Fail(c, "key not found")
+		return
+	}
+	data, err := l.Get(key)
+	if err != nil {
+		common.Fail(c, "get file error")
+		return
+	}
+	c.Data(200, "image/jpeg", data)
 }

@@ -40,7 +40,7 @@ func (r *RepoImpl) WithUnitOfWork(f persistence.UnitOfWorkFunc) error {
 
 func (r *RepoImpl) GetTags() (*[]Tag, error) {
 	var tags []Tag
-	err := r.db.Select(&tags, "SELECT * FROM tags")
+	err := r.db.Select(&tags, "SELECT * FROM tags where deleted_at is null")
 	if err != nil {
 		return nil, err
 	}

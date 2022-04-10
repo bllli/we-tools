@@ -19,3 +19,8 @@ type MemeDto struct {
 	Tags  []string `json:"tags"`
 	Url   string   `json:"image_url"`
 }
+
+type TagDto struct {
+	ID   uint64 `json:"id"`
+	Name string `json:"name"`
+}

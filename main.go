@@ -28,14 +28,16 @@ func main() {
 		log.Fatalf("new snowflake node failed, err:%v", err)
 		return
 	}
-	localStorage, err := storage.NewLocalStorage("storage", "http://localhost:9999")
+	localStorage, err := storage.NewLocalStorage("storage", "http://localhost:9999/file")
 	if err != nil {
 		log.Fatalf("new local storage failed, err:%v", err)
 		return
 	}
 	memeUsecase := memes.NewUsecase(memeRepo, node, localStorage)
 	memesApi := memes.NewApi(memeUsecase)
+	r.GET("/file/*key", localStorage.Handle)
 	r.POST("/memes", memesApi.UploadMeme)
+	r.GET("/memes/tags", memesApi.GetTags)
 
 	r.Run("localhost:9999")
 }

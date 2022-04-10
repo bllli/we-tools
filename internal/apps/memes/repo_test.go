@@ -114,4 +114,10 @@ func TestRepo(t *testing.T) {
 	assert.Equal(t, meme1.CreatorID, meme2.CreatorID)
 	assert.Equal(t, meme1.Status, meme2.Status)
 	assert.Equal(t, meme1.LikeCount, meme2.LikeCount)
+
+	memes, err := repo.GetMemes(0, 0, 10)
+	if err != nil {
+		t.Fatal("get memes failed", err)
+	}
+	assert.GreaterOrEqual(t, len(*memes), 1)
 }

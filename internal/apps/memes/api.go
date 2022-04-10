@@ -58,3 +58,13 @@ func (api *Api) UploadMeme(c *gin.Context) {
 	}
 	common.OK(c, outputDto)
 }
+
+// GetTags returns all tags
+func (api *Api) GetTags(c *gin.Context) {
+	outputDto, err := api.usecase.GetTags()
+	if err != nil {
+		common.Fail(c, err.Error())
+		return
+	}
+	common.OK(c, outputDto)
+}
