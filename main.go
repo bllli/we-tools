@@ -1,16 +1,41 @@
 package main
 
 import (
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/bwmarrin/snowflake"
+	"github.com/gin-gonic/gin"
+	"log"
+	"we-tools/internal/apps/memes"
+	"we-tools/internal/common/db"
+	"we-tools/internal/common/storage"
 )
 
 func main() {
-	//r := gin.Default()
-	//r.GET("/ping", func(c *gin.Context) {
-	//	c.JSON(200, gin.H{
-	//		"message": "pong",
-	//	})
-	//})
-	//r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
 
+	mysqlDB, err := db.NewDB("mysql", "root:q123q123@tcp(127.0.0.1:3306)/we_tools?charset=utf8&parseTime=True&loc=Local")
+	if err != nil {
+		log.Fatalf("connect to mysql failed, err:%v", err)
+		return
+	}
+	memeRepo := memes.NewRepo(mysqlDB)
+	node, err := snowflake.NewNode(1)
+	if err != nil {
+		log.Fatalf("new snowflake node failed, err:%v", err)
+		return
+	}
+	localStorage, err := storage.NewLocalStorage("storage", "http://localhost:9999")
+	if err != nil {
+		log.Fatalf("new local storage failed, err:%v", err)
+		return
+	}
+	memeUsecase := memes.NewUsecase(memeRepo, node, localStorage)
+	memesApi := memes.NewApi(memeUsecase)
+	r.POST("/memes", memesApi.UploadMeme)
+
+	r.Run("localhost:9999")
 }

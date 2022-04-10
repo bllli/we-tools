@@ -1,26 +1,25 @@
 package memes
 
-import "gorm.io/gorm"
+//type Tag struct {
+//	ID    uint64 `db:"id"`
+//	Name  string `db:"name"`
+//	Count uint64 `db:"count"`
+//}
 
-type Tags struct {
-	gorm.Model
-	ID   uint64 `gorm:"primary_key"`
-	Name string `gorm:"type:varchar(255);unique_index"`
+type Meme struct {
+	ID         uint64     `db:"id"`
+	Title      string     `db:"title"`
+	StorageKey string     `db:"storage_key"`
+	Type       MemeType   `db:"type"`
+	CreatorID  uint64     `db:"creator_id"`
+	Status     MemeStatus `db:"status"`
+	LikeCount  uint64     `db:"like_count"`
 }
 
-type Memes struct {
-	gorm.Model
-	ID        uint64     `gorm:"primary_key"`
-	Title     string     `gorm:"type:varchar(64);not null"`
-	Url       string     `gorm:"type:varchar(128);not null"`
-	Type      MemeType   `gorm:"not null"`
-	CreatorID uint64     `gorm:"not null"`
-	Status    MemeStatus `gorm:"not null"`
-}
-
-type MemesTags struct {
-	gorm.Model
-	ID      uint64 `gorm:"primary_key"`
-	MemesID uint64 `gorm:"not null"`
-	TagsID  uint64 `gorm:"not null"`
-}
+//
+//type MemeTag struct {
+//	ID      uint64 `db:"id"`
+//	MemesID uint64 `db:"memes_id"`
+//	TagsID  uint64 `db:"tags_id"`
+//	Like    uint64 `db:"like"`
+//}
