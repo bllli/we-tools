@@ -10,10 +10,6 @@ type Api struct {
 	usecase Usecase
 }
 
-//func (api *Api) GetMemes() ([]Meme, error) {
-//	return []Meme{}, nil
-//}
-
 // NewApi creates a new memes api
 func NewApi(usecase Usecase) *Api {
 	return &Api{usecase}

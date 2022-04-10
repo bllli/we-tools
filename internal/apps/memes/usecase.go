@@ -2,6 +2,7 @@ package memes
 
 import (
 	"github.com/bwmarrin/snowflake"
+	"github.com/jmoiron/sqlx"
 	"strconv"
 )
 import "we-tools/internal/common/storage"
@@ -56,10 +57,18 @@ func (u *UsecaseImpl) CreateMeme(input *CreateMemeInputDto) (*CreateMemeOutputDt
 		Status:     MemeStatusPending,
 		LikeCount:  0,
 	}
-	err = u.repo.CreateMeme(&meme)
+
+	err = u.repo.WithUnitOfWork(func(tx *sqlx.Tx) error {
+		err := u.repo.CreateMeme(tx, &meme)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	if err != nil {
 		return nil, err
 	}
+
 	return &CreateMemeOutputDto{
 		ID:  id,
 		Url: url,
