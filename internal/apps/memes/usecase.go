@@ -3,6 +3,7 @@ package memes
 import (
 	"github.com/bwmarrin/snowflake"
 	"github.com/jmoiron/sqlx"
+	"log"
 	"strconv"
 )
 import "we-tools/internal/common/storage"
@@ -26,6 +27,7 @@ type GetTagsOutputDto struct {
 type Usecase interface {
 	CreateMeme(input *CreateMemeInputDto) (*CreateMemeOutputDto, error)
 	GetTags() (*GetTagsOutputDto, error)
+	ListMemes(page int, prePage int) ([]MemeDto, error)
 }
 
 type UsecaseImpl struct {
@@ -43,6 +45,28 @@ func NewUsecase(repo Repo, idGenerator *snowflake.Node, storage storage.Storage)
 		idGenerator: idGenerator,
 		storage:     storage,
 	}
+}
+
+// ListMemes returns all memes
+func (u *UsecaseImpl) ListMemes(page int, prePage int) ([]MemeDto, error) {
+	memes, err := u.repo.ListMemes(page, prePage)
+	if err != nil {
+		return nil, err
+	}
+	memeDtoList := make([]MemeDto, 0)
+	for _, meme := range *memes {
+		url, err := u.storage.GetUrl(meme.StorageKey)
+		if err != nil {
+			log.Printf("meme error getting url. id: %v, err: %v", meme.ID, err)
+			continue
+		}
+		memeDtoList = append(memeDtoList, MemeDto{
+			ID:    strconv.FormatUint(meme.ID, 10),
+			Url:   url,
+			Title: meme.Title,
+		})
+	}
+	return memeDtoList, nil
 }
 
 // CreateMeme creates a new meme

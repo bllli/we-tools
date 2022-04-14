@@ -16,6 +16,8 @@ type Repo interface {
 	CreateTag(name string) error
 	CreateMeme(tx *sqlx.Tx, meme *Meme) error
 	CreateMemeTag(tx *sqlx.Tx, memeId uint64, tagIds []uint64) error
+
+	ListMemes(page, prePage int) (*[]Meme, error)
 }
 
 type RepoImpl struct {
@@ -31,6 +33,16 @@ func NewRepo(db *sqlx.DB) Repo {
 		db:  db,
 		uow: uow,
 	}
+}
+
+// ListMemes returns memes list
+func (r *RepoImpl) ListMemes(page, prePage int) (*[]Meme, error) {
+	var memes []Meme
+	err := r.db.Select(&memes, "SELECT * FROM memes ORDER BY id DESC LIMIT ?, ?", (page-1)*prePage, prePage)
+	if err != nil {
+		return nil, err
+	}
+	return &memes, nil
 }
 
 // WithUnitOfWork executes the given function in a UnitOfWork.

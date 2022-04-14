@@ -68,3 +68,29 @@ func (api *Api) GetTags(c *gin.Context) {
 	}
 	common.OK(c, outputDto)
 }
+
+type ListMemesInputDto struct {
+	Page    int
+	PrePage int
+}
+
+func (api *Api) ListMemes(c *gin.Context) {
+	inputDto := &ListMemesInputDto{}
+	err := c.BindQuery(inputDto)
+	if err != nil {
+		common.Fail(c, err.Error())
+		return
+	}
+	if inputDto.Page < 1 {
+		inputDto.Page = 1
+	}
+	if inputDto.PrePage < 1 {
+		inputDto.PrePage = 10
+	} else if inputDto.PrePage > 100 {
+		inputDto.PrePage = 100
+	}
+
+	outputDto, err := api.usecase.ListMemes(inputDto.Page, inputDto.PrePage)
+
+	common.OK(c, outputDto)
+}

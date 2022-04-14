@@ -38,6 +38,7 @@ func main() {
 	r.GET("/file/*key", localStorage.Handle)
 	r.POST("/memes", memesApi.UploadMeme)
 	r.GET("/memes/tags", memesApi.GetTags)
+	r.GET("/memes", memesApi.ListMemes)
 
 	r.Run("localhost:9999")
 }
