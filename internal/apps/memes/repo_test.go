@@ -51,7 +51,7 @@ func TestRepo(t *testing.T) {
 	node, err := snowflake.NewNode(1)
 	assert.NoError(t, err)
 
-	db, err := sqlx.Connect("mysql", "root:q123q123@tcp(127.0.0.1:3306)/we_tools?charset=utf8mb4&parseTime=true")
+	db, err := sqlx.Connect("mysql", "root:q123q123@tcp(127.0.0.1:5080)/we_tools?charset=utf8mb4&parseTime=true")
 	if err != nil {
 		t.Fatal(err)
 	}

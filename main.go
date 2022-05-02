@@ -17,7 +17,7 @@ func main() {
 		})
 	})
 
-	mysqlDB, err := persistence.NewDB("mysql", "root:q123q123@tcp(127.0.0.1:3306)/we_tools?charset=utf8&parseTime=True&loc=Local")
+	mysqlDB, err := persistence.NewDB("mysql", "root:q123q123@tcp(127.0.0.1:5080)/we_tools?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		log.Fatalf("connect to mysql failed, err:%v", err)
 		return

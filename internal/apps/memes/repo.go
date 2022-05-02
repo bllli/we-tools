@@ -78,7 +78,7 @@ func (r *RepoImpl) GetTagsByNames(names []string) (*[]Tag, error) {
 func (r *RepoImpl) GetMemes(tagId, page, prePage uint8) (*[]Meme, error) {
 	var memes []Meme
 	if tagId == 0 {
-		err := r.db.Select(&memes, "SELECT * FROM memes ORDER BY like desc LIMIT ?, ?", page, prePage)
+		err := r.db.Select(&memes, "SELECT * FROM memes ORDER BY `like_count` desc LIMIT ?, ?", page, prePage)
 		return &memes, err
 	} else {
 		stmt := "SELECT * FROM memes " +
